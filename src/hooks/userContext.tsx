@@ -1,24 +1,21 @@
-import { createContext, useContext, ReactNode, useState, Dispatch, SetStateAction } from 'react';
+import { createContext, useContext, ReactNode, useState, Dispatch, SetStateAction, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
-import { api, apiSearch, detailUser } from '../services/api';
+import { api, apiSearch, detailUser, detailRepo } from '../services/api';
 import { LimitUser } from '../constant'
-import { IGithubUser } from '../interface'
+import { IGithubUser, ISingleRepo } from '../interface'
+import { async } from 'q';
 
 interface UserProviderProps {
     children: ReactNode
 }
 
-export interface FollowData {
-    id: number,
-    login: string,
-    avatar_url: string
-}
-
 interface UserContext {
     listUser: IGithubUser[],
     clearListUser: () => void;
+    singleRepo: ISingleRepo[];
+    getDetailRepo: any;
     getListUser: (username: string) => Promise<IGithubUser[]>,
     onFocusInput: boolean,
     setOnFocusInput: Dispatch<SetStateAction<boolean>>,
@@ -31,7 +28,11 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     let navigate = useNavigate();
 
     const [listUser, setListUser] = useState<IGithubUser[]>([])
+
+    const [singleRepo, setSingleRepo] = useState<ISingleRepo[]>([])
+
     const [onFocusInput, setOnFocusInput] = useState<boolean>(false)
+
     async function getListUser(username: string): Promise<IGithubUser[]> {
         try {
             if (username) {
@@ -40,6 +41,8 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                     let listUData = await Promise.all(resData.data.items.map(async (userdata: IGithubUser) => {
                         let detailUserData = await detailUser(userdata.login).get('')
                         userdata = detailUserData.data
+                        userdata.showAccordion = false
+                        userdata.dataRepo = []
                         return userdata
                     }))
                     setListUser(listUData)
@@ -57,6 +60,57 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
         }
     }
 
+    // async function getDetailRepo(username: string) {
+    //     let bufferlistUser = [] as IGithubUser[]
+
+    //     try {
+    //         if (username) {
+    //             let repoData = await detailRepo(username).get('')
+    //             if (repoData.status == 200 && repoData.data.length > 0) {
+    //                 console.log('repoData', repoData)
+    //                 setSingleRepo(repoData.data)
+    //                 listUser.map()
+    //             } 
+    //         } 
+
+    //     } catch (err) {
+    //         console.log('err', err)
+    //     }
+    // }
+
+    useEffect(() => {
+        console.log('listUser', listUser)
+    },[listUser])
+
+    const getDetailRepo = useCallback(async (username: string) => {
+        // let bufferlistUser = listUser
+        // console.log('bufferlistUser', bufferlistUser)
+        try {
+            if (username) {
+                let repoData = await detailRepo(username).get('')
+                if (repoData.status == 200 && repoData.data.length > 0) {
+                    console.log('repoData', repoData)
+                    setSingleRepo(repoData.data)
+                    let bufferlistUser = listUser.map((lUser) => {
+                        if(lUser.login == username){
+                            lUser.dataRepo = repoData.data
+                            lUser.showAccordion = true
+                        }else{
+                            lUser.dataRepo = []
+                            lUser.showAccordion = false
+                        }
+                        return lUser
+                    })
+                    setListUser(bufferlistUser)
+                }
+            }
+
+        } catch (err) {
+            console.log('err', err)
+        }
+
+    }, [listUser])
+
     function clearListUser() {
         setListUser([])
     }
@@ -67,9 +121,11 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
             value={{
                 getListUser,
                 listUser,
+                singleRepo,
                 clearListUser,
                 onFocusInput,
                 setOnFocusInput,
+                getDetailRepo,
             }}>
             {children}
         </UserContext.Provider>

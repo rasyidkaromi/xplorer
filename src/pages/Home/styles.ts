@@ -15,6 +15,8 @@ export const HomeStyle: IHomeStyle = {
         justifyContent: 'center',
         marginTop: '10%',
         // width: '100vw',
+        // height: '100vh',
+
         width: 'auto',
         // height: 'auto'
         // transition: 'all 0.5s',
