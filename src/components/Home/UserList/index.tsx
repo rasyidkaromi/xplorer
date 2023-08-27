@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RiGitRepositoryFill, RiFileCodeLine, RiSendPlane2Fill } from "react-icons/ri";
 import { useAnimate, stagger, motion } from "framer-motion";
 
-import { useUser } from '../../../hooks/useUser';
+import { useUser } from '../../../hooks/userContext';
 import { UserListStyle } from './styles'
 
 export function UserList() {
@@ -45,8 +45,8 @@ export function UserList() {
                         <div style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            // backgroundColor: 'red',
-                            width: '60%',
+                            backgroundColor: 'red',
+                            width: '55%',
                             marginLeft: '2%',
                             padding: 5,
                         }}>

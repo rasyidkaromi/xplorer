@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, useRef, CSSProperties } from 'react';
 import { motion, useCycle } from 'framer-motion'
 import GithubLogoImg from '../../../assets/github-icon.png';
 import { HeaderStyle } from './styles';
-import { useUser } from '../../../hooks/useUser';
+import { useUser } from '../../../hooks/userContext';
 
 const motionVariant = {
     motionOne: {

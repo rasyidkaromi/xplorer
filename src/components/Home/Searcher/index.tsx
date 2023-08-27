@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CiCircleRemove } from "react-icons/ci";
 import { useAnimate, stagger, motion } from "framer-motion";
 
-import { useUser } from '../../../hooks/useUser';
+import { useUser } from '../../../hooks/userContext';
 import { SearchStyle } from './styles'
 
 interface KeyboardEvent {
