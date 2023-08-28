@@ -52,83 +52,23 @@ export function UserList() {
                 return (
                     <motion.div
                         key={repo.id}
-                        onClick={() => {
-                            window.open(repo.html_url, "_blank", "noreferrer")
-                        }}
-                        onMouseOver={() => {
-                            setLocalUserRepoHover(repo.node_id)
-                        }}
+                        onClick={() => window.open(repo.html_url, "_blank", "noreferrer")}
+                        onMouseOver={() => setLocalUserRepoHover(repo.node_id)}
                         onMouseLeave={() => setLocalUserRepoHover('')}
                         style={{
-                            display: 'flex',
-                            flexDirection: 'column',
                             backgroundColor: localUserRepoHover == repo.node_id ? '#3a1a4f' : "#190824",
-                            boxShadow: 'rgb(121 79 147) 0px 1px 13px 0px',
-                            padding: 5,
-                            borderRadius: 5,
-                            border: '1px solid #0e3063',
-                            marginBottom: 10,
-                            marginLeft: '5%',
-                            height: 'auto',
+                            ...UserListStyle.containerUserRepo
                         }}>
 
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                height: 25,
-                            }}>
-                            <p style={{
-                                color: '#e5dbdb',
-                                fontSize: 13,
-                                fontWeight: 600,
-                                margin: 1,
-                            }}>
-                                {repo.name}
-                            </p>
-
-
-                            <p style={{
-                                color: '#e5dbdb',
-                                fontSize: 13,
-                                fontWeight: 400,
-                                marginLeft: 'auto',
-                            }}>
-                                {repo.stargazers_count}
-                            </p>
-                            <FaCodeFork
-                                style={{
-                                    width: '10%',
-                                    color: 'white',
-                                    fontSize: 12,
-                                }} />
-                            <p style={{
-                                color: '#e5dbdb',
-                                fontSize: 13,
-                                fontWeight: 400,
-                            }}>
-                                {repo.forks_count}
-                            </p>
-                            <RiStarFill
-                                style={{
-                                    width: '10%',
-                                    color: 'white',
-                                    fontSize: 13,
-                                }} />
+                        <div style={UserListStyle.divUserRepo}>
+                            <p style={UserListStyle.p_reponame}> {repo.name} </p>
+                            <p style={UserListStyle.p_star}> {repo.stargazers_count} </p>
+                            <FaCodeFork style={UserListStyle.iconfork} />
+                            <p style={UserListStyle.p_forkcount}>  {repo.forks_count}  </p>
+                            <RiStarFill style={UserListStyle.iconstar} />
                         </div>
 
-                        <div>
-                            <p style={{
-                                color: '#e5dbdb',
-                                paddingTop: 2,
-                                fontSize: 10,
-                                fontWeight: 300,
-                                margin: 3,
-                            }}>
-                                {repo.description}
-                            </p>
-                        </div>
+                        <p style={UserListStyle.p_description}> {repo.description} </p>
                     </motion.div>
                 )
             })
@@ -148,18 +88,7 @@ export function UserList() {
                                 },
                             }
                         }}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            backgroundColor: "#190824",
-                            boxShadow: 'rgb(121 79 147) 0px 1px 13px 0px',
-                            padding: 5,
-                            borderRadius: 5,
-                            border: '1px solid #0e3063',
-                            marginBottom: 10,
-                            marginLeft: '5%',
-                            height: 40,
-                        }}>
+                        style={UserListStyle.repoContentLoaderContainer}>
                         <RepoListLoader />
                     </motion.div>
                 )
@@ -179,7 +108,7 @@ export function UserList() {
                         <div
                             key={user.node_id}
                             onClick={() => {
-                                if(user.public_repos > 0 && user.public_repos <= 100){
+                                if (user.public_repos > 0 && user.public_repos <= 100) {
                                     let newListUser = listUser.map((lUser, i) => {
                                         lUser.dataRepo = []
                                         lUser.showAccordion = false
@@ -189,7 +118,7 @@ export function UserList() {
                                     setListUser(newListUser)
                                     getDetailRepo(user.login)
                                 }
-                                if(user.public_repos > 100){
+                                if (user.public_repos > 100) {
                                     let newListUser = listUser.map((lUser, i) => {
                                         lUser.dataRepo = []
                                         lUser.showAccordion = false
@@ -206,108 +135,31 @@ export function UserList() {
                                 ...UserListStyle.containerUserList
                             }}>
                             <img
-                                style={{
-                                    width: 70,
-                                    height: 70,
-                                    borderRadius: 40,
-                                    borderWidth: 1,
-                                    borderColor: 'white',
-                                    boxShadow: '1px 2px 9px #F4AAB9',
-                                }}
+                                style={UserListStyle.imageUserList}
                                 src={user.avatar_url}>
                             </img>
 
-                            <div style={{
-                                width: '5%'
-                            }}></div>
+                            <div style={UserListStyle.separatorUserList}></div>
 
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                width: '75%',
-                                marginLeft: '2%',
-                                padding: 5,
-                            }}>
-                                <p style={{
-                                    color: '#0e0d0d',
-                                    fontSize: 15,
-                                    fontWeight: 500,
-                                    paddingLeft: 5,
-                                    margin: 1,
-                                }}> {user.name}</p>
+                            <div style={UserListStyle.textContainerUserList}>
+                                <p style={UserListStyle.p_username}> {user.name}</p>
+                                <p style={UserListStyle.p_userlogin}> {user.login} </p>
 
-                                <p style={{
-                                    color: '#272626',
-                                    fontWeight: 500,
-                                    fontSize: 13,
-                                    paddingLeft: 5,
-                                    paddingBottom: 10,
-                                    margin: 1,
-                                }}> {user.login} </p>
-
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                    }}>
-                                    <RiGitRepositoryFill
-                                        style={{
-                                            width: '10%',
-                                            color: '#272626',
-                                            fontSize: 16,
-                                        }} />
-                                    <p style={{
-                                        color: '#272626',
-                                        fontSize: 12,
-                                        margin: 1,
-                                    }}>
-                                        {user.public_repos}
-                                    </p>
-                                    <RiFileCodeLine
-                                        style={{
-                                            width: '10%',
-                                            color: '#272626',
-                                            fontSize: 16,
-                                        }} />
-                                    <p style={{
-                                        color: '#272626',
-                                        fontSize: 12,
-                                        margin: 1,
-                                    }}>
-                                        {user.public_gists}
-                                    </p>
+                                <div style={UserListStyle.div_repo_icon}>
+                                    <RiGitRepositoryFill style={UserListStyle.iconrepo} />
+                                    <p style={UserListStyle.p_repo}>  {user.public_repos} </p>
+                                    <RiFileCodeLine style={UserListStyle.icongists} />
+                                    <p style={UserListStyle.p_gists}> {user.public_gists}</p>
                                 </div>
 
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                    }}>
-                                    <p style={{
-                                        color: '#272626',
-                                        fontSize: 10,
-                                        paddingLeft: 5,
-                                        paddingTop: 5,
-                                        paddingBottom: 2,
-                                        margin: 1,
-                                    }}> {user.followers} followers - {user.following} following</p>
+                                <div style={UserListStyle.followContainerUserList}>
+                                    <p style={UserListStyle.p_follow}> {user.followers} followers - {user.following} following</p>
                                     <motion.div
-                                        style={{
-                                            marginLeft: 'auto',
-                                        }}
+                                        style={UserListStyle.arrowRepoContainer}
                                         animate={{
                                             rotate: user.showAccordion ? 90 : 0
                                         }}>
-                                        <RiSendPlane2Fill
-                                            style={{
-                                                marginTop: 1,
-                                                paddingLeft: 5,
-                                                paddingTop: 5,
-                                                paddingBottom: 2,
-                                                width: '100%',
-                                                color: '#272626',
-                                                fontSize: 15,
-                                            }} />
+                                        <RiSendPlane2Fill style={UserListStyle.iconArrow} />
                                     </motion.div>
                                 </div>
                             </div>
@@ -325,24 +177,10 @@ export function UserList() {
                 return (
                     <motion.div
                         key={i}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}>
+                        style={UserListStyle.userContentLoaderContainer}>
                         <div
                             key={i}
-                            style={{
-                                backgroundColor: "#f1f3f5db",
-                                boxShadow: '1px 2px 9px #F4AAB9',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                padding: 10,
-                                borderRadius: 3,
-                                border: '1px solid #cbd1da',
-                                marginBottom: 20,
-                                alignItems: 'center',
-                                height: 80,
-                            }}>
+                            style={UserListStyle.divContentLoader}>
                             <UserListLoader />
                         </div>
                     </motion.div>
@@ -351,10 +189,6 @@ export function UserList() {
         }
     }, [listUser, localUserListHover, localUserRepoHover, onLoadingListUser])
 
-    return (
-        <>
-            {getViewUserList}
-        </>
-    );
+    return getViewUserList
 }
 
