@@ -12,15 +12,28 @@ interface KeyboardEvent {
 
 export function Searcher() {
     let navigate = useNavigate();
+    const { getListUser, onFocusInput, setOnFocusInput, clearListUser, onLoadingListUser } = useUser();
+
     const ref = useRef<any>(null);
 
     const [username, setUsername] = useState<string>('');
     const [goOnFocus, setGoOnFocus] = useState<boolean>(false)
-    const { getListUser, onFocusInput, setOnFocusInput, clearListUser } = useUser();
+    const [disableButtonSearch, setDisableButtonSearch] = useState<boolean>(false)
 
-    const handleSearchCB = useCallback(async () => {
+    useEffect(() => {
+        switch (onLoadingListUser) {
+            case true:
+                setDisableButtonSearch(true)
+                break;
+            case false:
+                setDisableButtonSearch(false)
+                break;
+        }
+    }, [onLoadingListUser])
+
+    const handleSearchCB = useCallback(() => {
         if (username) {
-            await getListUser(username)
+            getListUser(username)
         }
     }, [username])
 
@@ -85,12 +98,15 @@ export function Searcher() {
                         onClick={resetInput} />
                 </div>
             </div>
-            <button
-                style={SearchStyle.button}
-                type="button"
-                onClick={() => handleSearchCB()}>
-                Search
-            </button>
+            {onFocusInput ?
+                <button
+                    disabled={disableButtonSearch}
+                    style={disableButtonSearch ? SearchStyle.buttonDisable : SearchStyle.button}
+                    type="button"
+                    onClick={() => handleSearchCB()}>
+                    Search
+                </button> : []}
+
             <div>
 
             </div>

@@ -47,11 +47,11 @@ export function Header() {
     const handleMouseLeave = () => setImageOpacity(false)
 
     useEffect(() => {
-        console.log('onFocusInput', onFocusInput)
+        // console.log('onFocusInput', onFocusInput)
         if (onFocusInput) {
             cycleAnimation(1)
         } else {
-            cycleAnimation(0)
+            cycleAnimation(2)
         }
     }, [onFocusInput])
 

@@ -1,4 +1,16 @@
-import { ISearchStyle } from '../../../interface'
+// import { ISearchStyle } from '../../../interface'
+import { CSSProperties } from 'react';
+
+interface ISearchStyle {
+    container: CSSProperties,
+    label: CSSProperties,
+    inputContainer: CSSProperties,
+    input: CSSProperties,
+    inputFocus: CSSProperties,
+    button: CSSProperties,
+    buttonDisable: CSSProperties
+}
+
 
 export const SearchStyle: ISearchStyle = {
     container: {
@@ -52,15 +64,27 @@ export const SearchStyle: ISearchStyle = {
     button: {
         width: '100%',
         outline: 'none',
-        background: '#238636',
+        background: '#eb00a8',
         color: '#fff',
         fontFamily: 'Work Sans, sans-serif',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 500,
         border: '1px solid rgba(240, 246, 252, 0.1)',
-        paddingTop: 5,
-        paddingBottom: 12,
-        borderRadius: 6,
-        // transition: 'all 0.2s'
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 1,
+    },
+    buttonDisable: {
+        width: '100%',
+        outline: 'none',
+        background: '#b09aaa',
+        color: '#fff',
+        fontFamily: 'Work Sans, sans-serif',
+        fontSize: 16,
+        fontWeight: 500,
+        border: '1px solid rgba(240, 246, 252, 0.1)',
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderRadius: 1,
     }
 }
