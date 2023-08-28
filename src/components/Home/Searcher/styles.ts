@@ -1,16 +1,16 @@
-// import { ISearchStyle } from '../../../interface'
 import { CSSProperties } from 'react';
 
 interface ISearchStyle {
     container: CSSProperties,
     label: CSSProperties,
     inputContainer: CSSProperties,
-    input: CSSProperties,
-    inputFocus: CSSProperties,
+    div_input: CSSProperties,
+    div_inputFocus: CSSProperties,
+    input: CSSProperties
     button: CSSProperties,
+    x_icon: CSSProperties
     buttonDisable: CSSProperties
 }
-
 
 export const SearchStyle: ISearchStyle = {
     container: {
@@ -30,8 +30,8 @@ export const SearchStyle: ISearchStyle = {
     inputContainer: {
         position: 'relative'
     },
-    input: {
-        color:'#b2b2b2',
+    div_input: {
+        color: '#b2b2b2',
         width: '100%',
         outline: 'none',
         marginBottom: 16,
@@ -43,9 +43,8 @@ export const SearchStyle: ISearchStyle = {
         borderRadius: 6,
         fontWeight: 300,
         fontSize: 14,
-        // transition: 'all 0.2s',
     },
-    inputFocus: {
+    div_inputFocus: {
         color: 'white',
         width: '100%',
         outline: 'none',
@@ -57,9 +56,22 @@ export const SearchStyle: ISearchStyle = {
         borderRadius: 6,
         fontWeight: 300,
         fontSize: 14,
-        // transition: 'all 0.2s',
         border: '1px solid #1F6FEB',
         boxShadow: '0px 0px 0px 3px #0C2D6B'
+    },
+    input: {
+        width: '90%',
+        color: 'white',
+        background: '#0d1117',
+        border: '0px solid #30363D',
+        outline: 'none',
+        verticalAlign: 'middle',
+    },
+    x_icon: {
+        position: 'absolute',
+        width: '8%',
+        color: 'white',
+        fontSize: 24,
     },
     button: {
         width: '100%',
