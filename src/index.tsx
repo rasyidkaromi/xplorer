@@ -18,5 +18,3 @@ ReactDOM.createRoot(initDocument()).render(
     <App />
   </React.StrictMode>
 )
-
-// overflowY: 'scroll',

@@ -1,31 +1,4 @@
 
-import { CSSProperties } from 'react';
-
-
-interface ISearchStyle {
-    container: CSSProperties,
-    label: CSSProperties,
-    inputContainer: CSSProperties,
-    input: CSSProperties,
-    inputFocus: CSSProperties,
-    button: CSSProperties,
-}
-
-interface IHomeStyle {
-    container: CSSProperties,
-    containerOnFocus: CSSProperties,
-    pageContainer: CSSProperties,
-}
-
-interface iHeaderStyle {
-    container: CSSProperties,
-    motionImg: CSSProperties,
-    img: CSSProperties,
-    h1style: CSSProperties,
-    imgHover: CSSProperties,
-    imgOnFocus: CSSProperties
-}
-
 interface IGithubUser {
     avatar_url: string,
     events_url: string,
@@ -148,9 +121,6 @@ interface ISingleRepo {
 }
 
 export type {
-    ISearchStyle,
-    iHeaderStyle,
-    IHomeStyle,
     IGithubUser,
     ISingleRepo
 }

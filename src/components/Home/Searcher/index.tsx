@@ -1,8 +1,5 @@
-import { useCallback, useEffect, useState, useRef, CSSProperties } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { CiCircleRemove } from "react-icons/ci";
-import { useAnimate, stagger, motion } from "framer-motion";
-
 import { useUser } from '../../../hooks/userContext';
 import { SearchStyle } from './styles'
 
@@ -11,13 +8,11 @@ interface KeyboardEvent {
 }
 
 export function Searcher() {
-    let navigate = useNavigate();
     const { getListUser, onFocusInput, setOnFocusInput, clearListUser, onLoadingListUser } = useUser();
 
     const ref = useRef<any>(null);
 
     const [username, setUsername] = useState<string>('');
-    const [goOnFocus, setGoOnFocus] = useState<boolean>(false)
     const [disableButtonSearch, setDisableButtonSearch] = useState<boolean>(false)
 
     useEffect(() => {
@@ -35,7 +30,7 @@ export function Searcher() {
         if (username) {
             getListUser(username)
         }
-    }, [username])
+    }, [username, getListUser])
 
     const resetInput = () => {
         console.log('resetInput')
@@ -46,20 +41,19 @@ export function Searcher() {
 
     const isOnFocus = useCallback(() => {
         setOnFocusInput(true)
-    }, [username, onFocusInput])
+    }, [setOnFocusInput])
 
     const isOnBlur = useCallback(() => {
         if (username === '' && onFocusInput === true) {
-            console.log(`username === '' && onFocusInput === false`, username)
             setOnFocusInput(false)
         }
-    }, [username, onFocusInput])
+    }, [username, onFocusInput, setOnFocusInput])
 
     const iseOnKeyDown = (e: KeyboardEvent) => {
-        if (e.key == 'Escape') {
+        if (e.key === 'Escape') {
             ref.current.blur()
         }
-        if (e.key == 'Enter') handleSearchCB();
+        if (e.key === 'Enter') handleSearchCB();
     }
 
     return (

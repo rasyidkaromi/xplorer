@@ -1,17 +1,13 @@
-import { createContext, useContext, ReactNode, useState, Dispatch, SetStateAction, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { toast } from 'react-toastify';
-import { api, apiSearch, detailUser, detailRepo, detailRepoMultiple } from '../services/api';
+import { createContext, useContext, ReactNode, useState, Dispatch, SetStateAction, useCallback } from 'react';
+import { apiSearch, detailUser, detailRepo, detailRepoMultiple } from '../services/api';
 import { LimitUser } from '../constant'
-import { IGithubUser, ISingleRepo } from '../interface'
-import { async } from 'q';
+import { IGithubUser } from '../interface'
 
 interface UserProviderProps {
     children: ReactNode
 }
 
-interface UserContext {
+interface IUserContext {
     listUser: IGithubUser[],
     setListUser: Dispatch<SetStateAction<IGithubUser[]>>,
     clearListUser: () => void;
@@ -26,7 +22,7 @@ interface UserContext {
     setOnLoadingDetailRepo: Dispatch<SetStateAction<boolean>>,
 }
 
-const UserContext = createContext<UserContext>({} as UserContext);
+const UserContext = createContext<IUserContext>({} as IUserContext);
 
 export function UserProvider({ children }: UserProviderProps): JSX.Element {
 
@@ -60,7 +56,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
         } catch (err) {
             console.log('err', err)
         }
-    }, [listUser])
+    }, [])
 
     const getDetailRepo = useCallback(async (username: string) => {
         setOnLoadingDetailRepo(true)
@@ -71,7 +67,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                     let repoData = await detailRepo(username).get('')
                     if (repoData.status === 200 && repoData.data.length > 0) {
                         let bufferlistUser = listUser.map((lUser) => {
-                            if (lUser.login == username) {
+                            if (lUser.login === username) {
                                 lUser.dataRepo = repoData.data
                                 lUser.showAccordion = true
                             } else {
@@ -117,7 +113,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                     if (repoData.length === pages) {
                         let allLongRepoData = repoData.map(({ data }) => [].concat(data)).flat()
                         let bufferlistUser = listUser.map((lUser) => {
-                            if (lUser.login == username) {
+                            if (lUser.login === username) {
                                 lUser.dataRepo = allLongRepoData
                                 lUser.showAccordion = true
                             } else {
@@ -167,7 +163,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     );
 }
 
-export function useUser(): UserContext {
+export function useUser(): IUserContext {
     const context = useContext(UserContext);
     return context;
 }

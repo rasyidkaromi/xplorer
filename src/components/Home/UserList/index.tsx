@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useState, useRef, CSSProperties, useMemo, MouseEventHandler, Dispatch, SetStateAction } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { RiGitRepositoryFill, RiFileCodeLine, RiSendPlane2Fill, RiStarFill, RiShareFill } from "react-icons/ri";
+import { useState, useMemo } from 'react';
+import { RiGitRepositoryFill, RiFileCodeLine, RiSendPlane2Fill, RiStarFill } from "react-icons/ri";
 import { FaCodeFork } from "react-icons/fa6";
 import ContentLoader from 'react-content-loader'
-
-import { useAnimate, stagger, motion, useCycle } from "framer-motion";
+import { motion } from "framer-motion";
 
 import { useUser } from '../../../hooks/userContext';
 import { UserListStyle } from './styles'
@@ -37,14 +35,9 @@ const UserListLoader = () => (
 )
 
 export function UserList() {
-    let navigate = useNavigate();
-    const { listUser, setListUser, getDetailRepo, getDetailRepoMultiple, onLoadingListUser, onLoadingDetailRepo } = useUser();
+    const { listUser, setListUser, getDetailRepo, getDetailRepoMultiple, onLoadingListUser } = useUser();
     const [localUserListHover, setLocalUserListHover] = useState<string>('')
     const [localUserRepoHover, setLocalUserRepoHover] = useState<string>('')
-
-    // useEffect(() => {
-    //     console.log('listUser', listUser)
-    // },[listUser])
 
     const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[], totalRepo: number): any => {
         if (isAccordion && repoData.length > 0) {
@@ -56,7 +49,7 @@ export function UserList() {
                         onMouseOver={() => setLocalUserRepoHover(repo.node_id)}
                         onMouseLeave={() => setLocalUserRepoHover('')}
                         style={{
-                            backgroundColor: localUserRepoHover == repo.node_id ? '#3a1a4f' : "#190824",
+                            backgroundColor: localUserRepoHover === repo.node_id ? '#3a1a4f' : "#190824",
                             ...UserListStyle.containerUserRepo
                         }}>
 
@@ -130,14 +123,15 @@ export function UserList() {
                                 }
                             }}
                             style={{
-                                backgroundColor: localUserListHover == user.node_id ? '#f7edff' : "#f1f3f5db",
+                                backgroundColor: localUserListHover === user.node_id ? '#f7edff' : "#f1f3f5db",
                                 boxShadow: user.showAccordion ? 'rgb(244, 170, 185) 0px 1px 18px 10px' : '1px 2px 9px #F4AAB9',
                                 ...UserListStyle.containerUserList
                             }}>
                             <img
                                 style={UserListStyle.imageUserList}
-                                src={user.avatar_url}>
-                            </img>
+                                src={user.avatar_url}
+                                // alt="user-image"
+                                />
 
                             <div style={UserListStyle.separatorUserList}></div>
 
@@ -187,7 +181,7 @@ export function UserList() {
                 )
             })
         }
-    }, [listUser, localUserListHover, localUserRepoHover, onLoadingListUser])
+    }, [listUser, localUserListHover, onLoadingListUser, getDetailRepo, getDetailRepoMultiple, setListUser])
 
     return getViewUserList
 }

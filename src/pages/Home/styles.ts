@@ -1,4 +1,10 @@
-import { IHomeStyle } from '../../interface'
+import { CSSProperties } from 'react';
+
+interface IHomeStyle {
+    container: CSSProperties,
+    containerOnFocus: CSSProperties,
+    pageContainer: CSSProperties,
+}
 
 export const HomeStyle: IHomeStyle = {
     container: {
@@ -7,23 +13,16 @@ export const HomeStyle: IHomeStyle = {
         justifyContent: 'center',
         height: '100vh',
         width: '100vw',
-        // transition: 'all 0.5s',
     },
     containerOnFocus: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: '10%',
-        // width: '100vw',
-        // height: '100vh',
-
         width: 'auto',
-        // height: 'auto'
-        // transition: 'all 0.5s',
     },
     pageContainer: {
         width: '80vw',
-        // height: '100vh',
         maxWidth: 350
     }
 }
