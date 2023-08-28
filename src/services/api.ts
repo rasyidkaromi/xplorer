@@ -25,7 +25,7 @@ const detailUser = (uName: string) => {
 
 const detailRepo = (uName: string) => {
     return axios.create({
-        baseURL: `https://api.github.com/users/${uName}/repos`,
+        baseURL: `https://api.github.com/users/${uName}/repos?per_page=100`,
         headers: {
             // Authorization: "Bearer "+AUTH_TOKEN,
         }

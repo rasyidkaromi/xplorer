@@ -42,9 +42,9 @@ export function UserList() {
     const [localUserListHover, setLocalUserListHover] = useState<string>('')
     const [localUserRepoHover, setLocalUserRepoHover] = useState<string>('')
 
-    useEffect(() => {
-        console.log('listUser', listUser)
-    },[listUser])
+    // useEffect(() => {
+    //     console.log('listUser', listUser)
+    // },[listUser])
 
     const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[], totalRepo: number): any => {
         if (isAccordion && repoData.length > 0) {
@@ -53,7 +53,6 @@ export function UserList() {
                     <motion.div
                         key={repo.id}
                         onClick={() => {
-                            // console.log('html_url', html_url)
                             window.open(repo.html_url, "_blank", "noreferrer")
                         }}
                         onMouseOver={() => {
@@ -176,10 +175,7 @@ export function UserList() {
                         key={user.id}
                         onMouseOver={() => setLocalUserListHover(user.node_id)}
                         onMouseLeave={() => setLocalUserListHover('')}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}>
+                        style={UserListStyle.headUserList}>
                         <div
                             key={user.node_id}
                             onClick={() => {
@@ -207,14 +203,7 @@ export function UserList() {
                             style={{
                                 backgroundColor: localUserListHover == user.node_id ? '#f7edff' : "#f1f3f5db",
                                 boxShadow: user.showAccordion ? 'rgb(244, 170, 185) 0px 1px 18px 10px' : '1px 2px 9px #F4AAB9',
-                                display: 'flex',
-                                flexDirection: 'row',
-                                padding: 10,
-                                borderRadius: 3,
-                                border: '1px solid #cbd1da',
-                                marginBottom: 20,
-                                alignItems: 'center',
-                                height: 80,
+                                ...UserListStyle.containerUserList
                             }}>
                             <img
                                 style={{
