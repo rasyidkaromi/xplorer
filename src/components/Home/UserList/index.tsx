@@ -23,6 +23,20 @@ const RepoListLoader = () => (
     </ContentLoader>
 )
 
+const UserListLoader = () => (
+    <ContentLoader
+        height={140}
+        speed={1}
+        backgroundColor={'#333'}
+        foregroundColor={'#999'}
+        viewBox="0 0 380 70"
+    >
+        <rect x="0" y="0" rx="100" ry="100" width="70" height="70" />
+        <rect x="80" y="17" rx="4" ry="4" width="300" height="13" />
+        <rect x="80" y="40" rx="3" ry="3" width="250" height="10" />
+    </ContentLoader>
+)
+
 export function UserList() {
     let navigate = useNavigate();
     const { listUser, setListUser, getDetailRepo, onLoadingListUser, onLoadingDetailRepo } = useUser();
@@ -33,7 +47,7 @@ export function UserList() {
         getDetailRepo(userName)
     }
 
-    const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[]) : any => {
+    const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[], totalRepo: number): any => {
         if (isAccordion && repoData.length > 0) {
             return repoData.map(repo => {
                 return (
@@ -118,36 +132,43 @@ export function UserList() {
             })
         }
         if (isAccordion) {
-            return (
-                <motion.div
-                    animate={{
-                        x: [-30, 0],
-                        transition: {
-                            x: {
-                                duration: 0.2,
-                                ease: 'easeOut'
-                            },
-                        }
-                    }}
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        backgroundColor: "#190824",
-                        boxShadow: 'rgb(121 79 147) 0px 1px 13px 0px',
-                        padding: 5,
-                        borderRadius: 5,
-                        border: '1px solid #0e3063',
-                        marginBottom: 10,
-                        marginLeft: '5%',
-                        height: 40,
-                    }}>
-                    <RepoListLoader />
-                </motion.div>
-            )
+            const emptyArray = Array.apply(null, Array(totalRepo))
+            return emptyArray.map((repo, i) => {
+                return (
+                    <motion.div
+                        key={i}
+                        animate={{
+                            x: [-30, 0],
+                            transition: {
+                                x: {
+                                    duration: 0.2,
+                                    ease: 'easeOut'
+                                },
+                            }
+                        }}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            backgroundColor: "#190824",
+                            boxShadow: 'rgb(121 79 147) 0px 1px 13px 0px',
+                            padding: 5,
+                            borderRadius: 5,
+                            border: '1px solid #0e3063',
+                            marginBottom: 10,
+                            marginLeft: '5%',
+                            height: 40,
+                        }}>
+                        <RepoListLoader />
+                    </motion.div>
+                )
+            })
         }
     }
 
     const getViewUserList = useMemo(() => {
+        console.log('listUser', listUser)
+        console.log('onLoadingListUser', onLoadingListUser)
+
         if (listUser.length > 0) {
             return listUser.map((user, i) => {
                 return (
@@ -290,14 +311,45 @@ export function UserList() {
                                 </div>
                             </div>
                         </div>
-                        {detaiListUserRepo(user.showAccordion, user.dataRepo)}
+                        {detaiListUserRepo(user.showAccordion, user.dataRepo, user.public_repos)}
                     </div>
                 )
             })
-        } else {
-            return ([])
         }
-    }, [listUser, localUserListHover, localUserRepoHover])
+
+
+        if (onLoadingListUser && listUser.length === 0) {
+            const emptyArray = Array.apply(null, Array(5))
+            return emptyArray.map((eArr, i) => {
+                console.log('go go go')
+                return (
+                    <motion.div
+                        key={i}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}>
+                        <div
+                            key={i}
+                            style={{
+                                backgroundColor: "#f1f3f5db",
+                                boxShadow: '1px 2px 9px #F4AAB9',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                padding: 10,
+                                borderRadius: 3,
+                                border: '1px solid #cbd1da',
+                                marginBottom: 20,
+                                alignItems: 'center',
+                                height: 80,
+                            }}>
+                            <UserListLoader />
+                        </div>
+                    </motion.div>
+                )
+            })
+        }
+    }, [listUser, localUserListHover, localUserRepoHover, onLoadingListUser])
 
     return (
         <>

@@ -15,9 +15,7 @@ interface UserContext {
     listUser: IGithubUser[],
     setListUser: Dispatch<SetStateAction<IGithubUser[]>>,
     clearListUser: () => void;
-    // singleRepo: ISingleRepo[];
     getDetailRepo: any;
-    // getListUser: (username: string) => Promise<IGithubUser[]>,
     getListUser: (username: string) => void,
     onFocusInput: boolean,
     setOnFocusInput: Dispatch<SetStateAction<boolean>>,
@@ -36,7 +34,8 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     const [onLoadingListUser, setOnLoadingListUser] = useState<boolean>(false)
     const [onLoadingDetailRepo, setOnLoadingDetailRepo] = useState<boolean>(false)
 
-    async function getListUser(username: string) {
+    const getListUser = useCallback((username: string) => {
+        setListUser([])
         setOnLoadingListUser(true)
         try {
             setTimeout(async () => {
@@ -60,7 +59,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
         } catch (err) {
             console.log('err', err)
         }
-    }
+    }, [listUser])
 
     const getDetailRepo = useCallback(async (username: string) => {
         setOnLoadingDetailRepo(true)
@@ -114,7 +113,6 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                 getListUser,
                 listUser,
                 setListUser,
-                // singleRepo,
                 clearListUser,
                 onFocusInput,
                 setOnFocusInput,
