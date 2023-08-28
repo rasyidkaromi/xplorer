@@ -2,7 +2,7 @@ import { createContext, useContext, ReactNode, useState, Dispatch, SetStateActio
 import { useNavigate } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
-import { api, apiSearch, detailUser, detailRepo } from '../services/api';
+import { api, apiSearch, detailUser, detailRepo, detailRepoMultiple } from '../services/api';
 import { LimitUser } from '../constant'
 import { IGithubUser, ISingleRepo } from '../interface'
 import { async } from 'q';
@@ -15,7 +15,8 @@ interface UserContext {
     listUser: IGithubUser[],
     setListUser: Dispatch<SetStateAction<IGithubUser[]>>,
     clearListUser: () => void;
-    getDetailRepo: any;
+    getDetailRepo: (username: string) => Promise<void>;
+    getDetailRepoMultiple: (username: string, totalRepo: number) => Promise<void>;
     getListUser: (username: string) => void,
     onFocusInput: boolean,
     setOnFocusInput: Dispatch<SetStateAction<boolean>>,
@@ -63,8 +64,9 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
 
     const getDetailRepo = useCallback(async (username: string) => {
         setOnLoadingDetailRepo(true)
-        try {
-            setTimeout(async () => {
+
+        setTimeout(async () => {
+            try {
                 if (username) {
                     let repoData = await detailRepo(username).get('')
                     if (repoData.status === 200 && repoData.data.length > 0) {
@@ -95,12 +97,49 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                         setOnLoadingDetailRepo(false)
                     }
                 }
-            }, 1000)
-        } catch (err) {
-            console.log('err', err)
-        }
+            } catch (err) {
+                console.log('err', err)
+            }
+        }, 1000)
 
     }, [listUser])
+
+
+
+    const getDetailRepoMultiple = useCallback(async (username: string, totalRepo: number) => {
+        let pages = Math.ceil(totalRepo / 100)
+        setOnLoadingDetailRepo(true)
+
+        setTimeout(async () => {
+            try {
+                if (username) {
+                    let repoData = await detailRepoMultiple(username, pages)
+                    if (repoData.length === pages) {
+                        let allLongRepoData = repoData.map(({ data }) => [].concat(data)).flat()
+                        let bufferlistUser = listUser.map((lUser) => {
+                            if (lUser.login == username) {
+                                lUser.dataRepo = allLongRepoData
+                                lUser.showAccordion = true
+                            } else {
+                                lUser.dataRepo = []
+                                lUser.showAccordion = false
+                            }
+                            return lUser
+                        })
+                        setListUser(bufferlistUser)
+                        setOnLoadingDetailRepo(false)
+                    }
+                    else {
+                        setOnLoadingDetailRepo(false)
+                    }
+                }
+            } catch (err) {
+                console.log('err', err)
+            }
+        }, 1000)
+
+    }, [listUser])
+
 
     function clearListUser() {
         setListUser([])
@@ -117,6 +156,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                 onFocusInput,
                 setOnFocusInput,
                 getDetailRepo,
+                getDetailRepoMultiple,
                 onLoadingListUser,
                 setOnLoadingListUser,
                 onLoadingDetailRepo,

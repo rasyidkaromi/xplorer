@@ -29,8 +29,7 @@ const UserListLoader = () => (
         speed={1}
         backgroundColor={'#333'}
         foregroundColor={'#999'}
-        viewBox="0 0 380 70"
-    >
+        viewBox="0 0 380 70">
         <rect x="0" y="0" rx="100" ry="100" width="70" height="70" />
         <rect x="80" y="17" rx="4" ry="4" width="300" height="13" />
         <rect x="80" y="40" rx="3" ry="3" width="250" height="10" />
@@ -39,13 +38,13 @@ const UserListLoader = () => (
 
 export function UserList() {
     let navigate = useNavigate();
-    const { listUser, setListUser, getDetailRepo, onLoadingListUser, onLoadingDetailRepo } = useUser();
+    const { listUser, setListUser, getDetailRepo, getDetailRepoMultiple, onLoadingListUser, onLoadingDetailRepo } = useUser();
     const [localUserListHover, setLocalUserListHover] = useState<string>('')
     const [localUserRepoHover, setLocalUserRepoHover] = useState<string>('')
 
-    const singleUserRepo = (userName: string) => {
-        getDetailRepo(userName)
-    }
+    useEffect(() => {
+        console.log('listUser', listUser)
+    },[listUser])
 
     const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[], totalRepo: number): any => {
         if (isAccordion && repoData.length > 0) {
@@ -53,6 +52,10 @@ export function UserList() {
                 return (
                     <motion.div
                         key={repo.id}
+                        onClick={() => {
+                            // console.log('html_url', html_url)
+                            window.open(repo.html_url, "_blank", "noreferrer")
+                        }}
                         onMouseOver={() => {
                             setLocalUserRepoHover(repo.node_id)
                         }}
@@ -166,9 +169,6 @@ export function UserList() {
     }
 
     const getViewUserList = useMemo(() => {
-        console.log('listUser', listUser)
-        console.log('onLoadingListUser', onLoadingListUser)
-
         if (listUser.length > 0) {
             return listUser.map((user, i) => {
                 return (
@@ -183,14 +183,26 @@ export function UserList() {
                         <div
                             key={user.node_id}
                             onClick={() => {
-                                let newListUser = listUser.map((lUser, i) => {
-                                    lUser.dataRepo = []
-                                    lUser.showAccordion = false
-                                    if (lUser.id === user.id) lUser.showAccordion = true
-                                    return lUser
-                                })
-                                setListUser(newListUser)
-                                singleUserRepo(user.login)
+                                if(user.public_repos > 0 && user.public_repos <= 100){
+                                    let newListUser = listUser.map((lUser, i) => {
+                                        lUser.dataRepo = []
+                                        lUser.showAccordion = false
+                                        if (lUser.id === user.id) lUser.showAccordion = true
+                                        return lUser
+                                    })
+                                    setListUser(newListUser)
+                                    getDetailRepo(user.login)
+                                }
+                                if(user.public_repos > 100){
+                                    let newListUser = listUser.map((lUser, i) => {
+                                        lUser.dataRepo = []
+                                        lUser.showAccordion = false
+                                        if (lUser.id === user.id) lUser.showAccordion = true
+                                        return lUser
+                                    })
+                                    setListUser(newListUser)
+                                    getDetailRepoMultiple(user.login, user.public_repos)
+                                }
                             }}
                             style={{
                                 backgroundColor: localUserListHover == user.node_id ? '#f7edff' : "#f1f3f5db",
@@ -321,7 +333,6 @@ export function UserList() {
         if (onLoadingListUser && listUser.length === 0) {
             const emptyArray = Array.apply(null, Array(5))
             return emptyArray.map((eArr, i) => {
-                console.log('go go go')
                 return (
                     <motion.div
                         key={i}
