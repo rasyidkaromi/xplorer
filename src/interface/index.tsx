@@ -35,7 +35,6 @@ interface IGithubUser {
     updated_at: string,
     dataRepo: ISingleRepo[],
     showAccordion: boolean
-
 }
 
 interface ISingleRepo {

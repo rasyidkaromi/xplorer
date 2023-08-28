@@ -1,6 +1,6 @@
 
 const AUTH_TOKEN = ''
-const LimitUser = '5'
+const LimitUser = '100'
 
 
 export {

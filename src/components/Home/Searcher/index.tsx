@@ -8,7 +8,7 @@ interface KeyboardEvent {
 }
 
 export function Searcher() {
-    const { getListUser, onFocusInput, setOnFocusInput, clearListUser, onLoadingListUser } = useUser();
+    const { getListUser, onFocusInput, setOnFocusInput, clearListUser, onLoadingListUser, setOnLoadingListUser } = useUser();
 
     const ref = useRef<any>(null);
 
@@ -37,6 +37,7 @@ export function Searcher() {
         setUsername('')
         clearListUser()
         setOnFocusInput(false)
+        setOnLoadingListUser(false)
     }
 
     const isOnFocus = useCallback(() => {
