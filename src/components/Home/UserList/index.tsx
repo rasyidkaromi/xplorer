@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState, useRef, CSSProperties, useMemo, MouseEventHandler } from 'react';
+import { useCallback, useEffect, useState, useRef, CSSProperties, useMemo, MouseEventHandler, Dispatch, SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RiGitRepositoryFill, RiFileCodeLine, RiSendPlane2Fill, RiStarFill, RiShareFill } from "react-icons/ri";
 import { FaCodeFork } from "react-icons/fa6";
+import ContentLoader from 'react-content-loader'
 
 import { useAnimate, stagger, motion, useCycle } from "framer-motion";
 
@@ -9,65 +10,63 @@ import { useUser } from '../../../hooks/userContext';
 import { UserListStyle } from './styles'
 import { ISingleRepo } from '../../../interface'
 
+const RepoListLoader = () => (
+    <ContentLoader
+        height={180}
+        speed={1}
+        backgroundColor={'#333'}
+        foregroundColor={'#999'}
+        viewBox="10 10 440 60">
+        <rect x="0" y="17" rx="5" ry="5" width="250" height="15" />
+        <rect x="300" y="17" rx="5" ry="5" width="140" height="15" />
+        <rect x="0" y="50" rx="3" ry="3" width="400" height="10" />
+    </ContentLoader>
+)
+
 export function UserList() {
     let navigate = useNavigate();
-    const { listUser, getDetailRepo, onLoadingListUser, onLoadingDetailRepo } = useUser();
-
-
-    // useEffect(() => {
-    //     console.log('UserList listUser', listUser)
-    // }, [listUser])
-
+    const { listUser, setListUser, getDetailRepo, onLoadingListUser, onLoadingDetailRepo } = useUser();
+    const [localUserListHover, setLocalUserListHover] = useState<string>('')
+    const [localUserRepoHover, setLocalUserRepoHover] = useState<string>('')
 
     const singleUserRepo = (userName: string) => {
         getDetailRepo(userName)
     }
 
-
-    // const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    //     console.log(event.target);
-    //     console.log(event.currentTarget);
-    //   };
-
-    const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[]): any[] => {
+    const detaiListUserRepo = (isAccordion: boolean, repoData: ISingleRepo[]) : any => {
         if (isAccordion && repoData.length > 0) {
             return repoData.map(repo => {
                 return (
                     <motion.div
                         key={repo.id}
+                        onMouseOver={() => {
+                            setLocalUserRepoHover(repo.node_id)
+                        }}
+                        onMouseLeave={() => setLocalUserRepoHover('')}
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            
-                            backgroundColor: "#190824",
+                            backgroundColor: localUserRepoHover == repo.node_id ? '#3a1a4f' : "#190824",
                             boxShadow: 'rgb(121 79 147) 0px 1px 13px 0px',
                             padding: 5,
                             borderRadius: 5,
                             border: '1px solid #0e3063',
                             marginBottom: 10,
                             marginLeft: '5%',
-                            // alignItems: 'center',
-                            // alignContent: 'center',
-                            // justifyContent: 'center',
-                            // height: 50,
                             height: 'auto',
-
                         }}>
 
                         <div
                             style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                // backgroundColor: 'red',
                                 alignItems: 'center',
                                 height: 25,
                             }}>
                             <p style={{
-                                // backgroundColor: 'green',
                                 color: '#e5dbdb',
                                 fontSize: 13,
                                 fontWeight: 600,
-                                // paddingLeft: 5,
                                 margin: 1,
                             }}>
                                 {repo.name}
@@ -75,16 +74,10 @@ export function UserList() {
 
 
                             <p style={{
-                                // backgroundColor: 'green',
                                 color: '#e5dbdb',
                                 fontSize: 13,
                                 fontWeight: 400,
                                 marginLeft: 'auto',
-                                // marginTop: 1,
-                                // alignItems: 'center',
-
-                                // paddingLeft: 5,
-                                // margin: 1,
                             }}>
                                 {repo.stargazers_count}
                             </p>
@@ -95,15 +88,9 @@ export function UserList() {
                                     fontSize: 12,
                                 }} />
                             <p style={{
-                                // backgroundColor: 'green',
                                 color: '#e5dbdb',
                                 fontSize: 13,
                                 fontWeight: 400,
-                                // marginTop: 1,
-
-                                // marginLeft: 'auto',
-                                // paddingLeft: 5,
-                                // margin: 1,
                             }}>
                                 {repo.forks_count}
                             </p>
@@ -115,15 +102,12 @@ export function UserList() {
                                 }} />
                         </div>
 
-
                         <div>
                             <p style={{
-                                // backgroundColor: 'green',
                                 color: '#e5dbdb',
                                 paddingTop: 2,
                                 fontSize: 10,
                                 fontWeight: 300,
-                                // paddingLeft: 5,
                                 margin: 3,
                             }}>
                                 {repo.description}
@@ -132,8 +116,34 @@ export function UserList() {
                     </motion.div>
                 )
             })
-        } else {
-            return []
+        }
+        if (isAccordion) {
+            return (
+                <motion.div
+                    animate={{
+                        x: [-30, 0],
+                        transition: {
+                            x: {
+                                duration: 0.2,
+                                ease: 'easeOut'
+                            },
+                        }
+                    }}
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        backgroundColor: "#190824",
+                        boxShadow: 'rgb(121 79 147) 0px 1px 13px 0px',
+                        padding: 5,
+                        borderRadius: 5,
+                        border: '1px solid #0e3063',
+                        marginBottom: 10,
+                        marginLeft: '5%',
+                        height: 40,
+                    }}>
+                    <RepoListLoader />
+                </motion.div>
+            )
         }
     }
 
@@ -141,17 +151,28 @@ export function UserList() {
         if (listUser.length > 0) {
             return listUser.map((user, i) => {
                 return (
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                    }}>
-
+                    <div
+                        key={user.id}
+                        onMouseOver={() => setLocalUserListHover(user.node_id)}
+                        onMouseLeave={() => setLocalUserListHover('')}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}>
                         <div
                             key={user.node_id}
-                            onClick={() => singleUserRepo(user.login)}
-
+                            onClick={() => {
+                                let newListUser = listUser.map((lUser, i) => {
+                                    lUser.dataRepo = []
+                                    lUser.showAccordion = false
+                                    if (lUser.id === user.id) lUser.showAccordion = true
+                                    return lUser
+                                })
+                                setListUser(newListUser)
+                                singleUserRepo(user.login)
+                            }}
                             style={{
-                                backgroundColor: "#f1f3f5db",
+                                backgroundColor: localUserListHover == user.node_id ? '#f7edff' : "#f1f3f5db",
                                 boxShadow: user.showAccordion ? 'rgb(244, 170, 185) 0px 1px 18px 10px' : '1px 2px 9px #F4AAB9',
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -178,12 +199,9 @@ export function UserList() {
                                 width: '5%'
                             }}></div>
 
-
-
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                // backgroundColor: 'red',
                                 width: '75%',
                                 marginLeft: '2%',
                                 padding: 5,
@@ -197,7 +215,6 @@ export function UserList() {
                                 }}> {user.name}</p>
 
                                 <p style={{
-                                    // backgroundColor: 'green',
                                     color: '#272626',
                                     fontWeight: 500,
                                     fontSize: 13,
@@ -210,7 +227,6 @@ export function UserList() {
                                     style={{
                                         display: 'flex',
                                         flexDirection: 'row',
-                                        // paddingBottom: 3,
                                     }}>
                                     <RiGitRepositoryFill
                                         style={{
@@ -219,10 +235,8 @@ export function UserList() {
                                             fontSize: 16,
                                         }} />
                                     <p style={{
-                                        // backgroundColor: 'green',
                                         color: '#272626',
                                         fontSize: 12,
-                                        // paddingLeft: 5,
                                         margin: 1,
                                     }}>
                                         {user.public_repos}
@@ -234,17 +248,13 @@ export function UserList() {
                                             fontSize: 16,
                                         }} />
                                     <p style={{
-                                        // backgroundColor: 'green',
                                         color: '#272626',
                                         fontSize: 12,
-                                        // paddingLeft: 5,
                                         margin: 1,
                                     }}>
                                         {user.public_gists}
                                     </p>
                                 </div>
-
-
 
                                 <div
                                     style={{
@@ -261,7 +271,6 @@ export function UserList() {
                                     }}> {user.followers} followers - {user.following} following</p>
                                     <motion.div
                                         style={{
-                                            // backgroundColor: 'red',
                                             marginLeft: 'auto',
                                         }}
                                         animate={{
@@ -269,7 +278,6 @@ export function UserList() {
                                         }}>
                                         <RiSendPlane2Fill
                                             style={{
-                                                // backgroundColor: 'grey',
                                                 marginTop: 1,
                                                 paddingLeft: 5,
                                                 paddingTop: 5,
@@ -279,25 +287,17 @@ export function UserList() {
                                                 fontSize: 15,
                                             }} />
                                     </motion.div>
-
                                 </div>
-
-
                             </div>
-
-
                         </div>
                         {detaiListUserRepo(user.showAccordion, user.dataRepo)}
-
                     </div>
-
                 )
             })
-
         } else {
             return ([])
         }
-    }, [listUser])
+    }, [listUser, localUserListHover, localUserRepoHover])
 
     return (
         <>

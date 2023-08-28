@@ -13,6 +13,7 @@ interface UserProviderProps {
 
 interface UserContext {
     listUser: IGithubUser[],
+    setListUser: Dispatch<SetStateAction<IGithubUser[]>>,
     clearListUser: () => void;
     // singleRepo: ISingleRepo[];
     getDetailRepo: any;
@@ -30,26 +31,10 @@ const UserContext = createContext<UserContext>({} as UserContext);
 
 export function UserProvider({ children }: UserProviderProps): JSX.Element {
 
-    let navigate = useNavigate();
-
     const [listUser, setListUser] = useState<IGithubUser[]>([])
-    // const [singleRepo, setSingleRepo] = useState<ISingleRepo[]>([])
     const [onFocusInput, setOnFocusInput] = useState<boolean>(false)
     const [onLoadingListUser, setOnLoadingListUser] = useState<boolean>(false)
     const [onLoadingDetailRepo, setOnLoadingDetailRepo] = useState<boolean>(false)
-
-    useEffect(() => {
-        console.log('onLoadingListUser', onLoadingListUser)
-    }, [onLoadingListUser])
-
-    useEffect(() => {
-        console.log('onLoadingDetailRepo', onLoadingDetailRepo)
-    }, [onLoadingDetailRepo])
-
-    useEffect(() => {
-        console.log('listUser', listUser)
-    }, [listUser])
-
 
     async function getListUser(username: string) {
         setOnLoadingListUser(true)
@@ -67,8 +52,10 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                         }))
                         setListUser(listUData)
                         setOnLoadingListUser(false)
+                    } else {
+                        setOnLoadingListUser(false)
                     }
-                } 
+                }
             }, 1000)
         } catch (err) {
             console.log('err', err)
@@ -76,15 +63,12 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     }
 
     const getDetailRepo = useCallback(async (username: string) => {
-        // let bufferlistUser = listUser
-        // console.log('bufferlistUser', bufferlistUser)
         setOnLoadingDetailRepo(true)
         try {
             setTimeout(async () => {
                 if (username) {
                     let repoData = await detailRepo(username).get('')
-                    if (repoData.status == 200 && repoData.data.length > 0) {
-                        // console.log('repoData', repoData)
+                    if (repoData.status === 200 && repoData.data.length > 0) {
                         let bufferlistUser = listUser.map((lUser) => {
                             if (lUser.login == username) {
                                 lUser.dataRepo = repoData.data
@@ -97,9 +81,22 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                         })
                         setListUser(bufferlistUser)
                         setOnLoadingDetailRepo(false)
+                    } else {
+                        setOnLoadingDetailRepo(false)
+                    }
+                    if (repoData.data.length === 0) {
+                        let bufferlistUser = listUser.map((lUser) => {
+                            lUser.dataRepo = []
+                            lUser.showAccordion = false
+                            return lUser
+                        })
+                        setListUser(bufferlistUser)
+                        setOnLoadingDetailRepo(false)
+                    } else {
+                        setOnLoadingDetailRepo(false)
                     }
                 }
-            },1000)
+            }, 1000)
         } catch (err) {
             console.log('err', err)
         }
@@ -116,6 +113,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
             value={{
                 getListUser,
                 listUser,
+                setListUser,
                 // singleRepo,
                 clearListUser,
                 onFocusInput,
