@@ -1,15 +1,17 @@
 import { CSSProperties } from 'react';
 
 interface ISearchStyle {
-    container: CSSProperties,
-    label: CSSProperties,
-    inputContainer: CSSProperties,
-    div_input: CSSProperties,
-    div_inputFocus: CSSProperties,
+    container: CSSProperties
+    label: CSSProperties
+    inputContainer: CSSProperties
+    div_input: CSSProperties
+    div_inputFocus: CSSProperties
     input: CSSProperties
-    button: CSSProperties,
+    button: CSSProperties
     x_icon: CSSProperties
     buttonDisable: CSSProperties
+    errorContainer: CSSProperties
+    errorMessage: CSSProperties
 }
 
 export const SearchStyle: ISearchStyle = {
@@ -98,5 +100,26 @@ export const SearchStyle: ISearchStyle = {
         paddingTop: 10,
         paddingBottom: 10,
         borderRadius: 1,
-    }
+    },
+    errorContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    errorMessage: {
+        width: '100%',
+        height: 30,
+        outline: 'none',
+        background: '#fa2424',
+        boxShadow: 'rgb(254 107 92) 0px 1px 30px 20px',
+        color: '#fff',
+        fontFamily: 'Work Sans, sans-serif',
+        fontSize: 16,
+        fontWeight: 500,
+        marginTop: 0,
+        marginBottom: 30,
+        paddingTop: 15,
+        paddingBottom: 15,
+        borderRadius: 1,
+        textAlign: 'center'
+    },
 }
