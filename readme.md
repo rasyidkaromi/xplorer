@@ -37,8 +37,8 @@ https://peppy-paprenjak-31bfb7.netlify.app/
 
 <br><br>
   <div align="center" >
-<img  src="https://i.ibb.co/XkGshQ0/peppy-paprenjak-31bfb7-netlify-app-1.png"  width="300px"  />
-<img  src="https://i.ibb.co/c8MmnWm/peppy-paprenjak-31bfb7-netlify-app.png"  width="300px"  />
-<img  src="https://i.ibb.co/dbnHX44/peppy-paprenjak-31bfb7-netlify-app-2.png"  width="300px"  />
+<img  src="https://i.ibb.co/XkGshQ0/peppy-paprenjak-31bfb7-netlify-app-1.png"  width="200px"  />
+<img  src="https://i.ibb.co/c8MmnWm/peppy-paprenjak-31bfb7-netlify-app.png"  width="200px"  />
+<img  src="https://i.ibb.co/dbnHX44/peppy-paprenjak-31bfb7-netlify-app-2.png"  width="200px"  />
 
 </div>
