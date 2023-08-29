@@ -181,7 +181,7 @@ export function UserList() {
                 )
             })
         }
-    }, [listUser, localUserListHover, onLoadingListUser, getDetailRepo, getDetailRepoMultiple, setListUser])
+    }, [listUser, localUserListHover, onLoadingListUser, getDetailRepo, getDetailRepoMultiple, setListUser, localUserRepoHover])
 
     return getViewUserList
 }
