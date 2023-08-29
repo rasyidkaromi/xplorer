@@ -1,26 +1,10 @@
-import { createContext, useContext, ReactNode, useState, Dispatch, SetStateAction, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { apiSearch, detailUser, detailRepo, detailRepoMultiple } from '../services/api';
 import { LimitUser } from '../constant'
-import { IGithubUser } from '../interface'
 
-interface UserProviderProps {
-    children: ReactNode
-}
+import { UserProviderProps, IUserContext, IGithubUser, errorMessage, ISingleRepo } from './IUserContext'
 
-interface IUserContext {
-    listUser: IGithubUser[],
-    setListUser: Dispatch<SetStateAction<IGithubUser[]>>,
-    clearListUser: () => void;
-    getDetailRepo: (username: string) => Promise<void>;
-    getDetailRepoMultiple: (username: string, totalRepo: number) => Promise<void>;
-    getListUser: (username: string) => void,
-    onFocusInput: boolean,
-    setOnFocusInput: Dispatch<SetStateAction<boolean>>,
-    onLoadingListUser: boolean,
-    setOnLoadingListUser: Dispatch<SetStateAction<boolean>>,
-    onLoadingDetailRepo: boolean,
-    setOnLoadingDetailRepo: Dispatch<SetStateAction<boolean>>,
-}
+
 
 const UserContext = createContext<IUserContext>({} as IUserContext);
 
@@ -30,6 +14,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     const [onFocusInput, setOnFocusInput] = useState<boolean>(false)
     const [onLoadingListUser, setOnLoadingListUser] = useState<boolean>(false)
     const [onLoadingDetailRepo, setOnLoadingDetailRepo] = useState<boolean>(false)
+    const [onErrorRequest, setOnErrorRequest] = useState<errorMessage>({ isError: false, messsage: '' })
 
 
     useEffect(() => {
@@ -39,42 +24,43 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     const getListUser = useCallback((username: string) => {
         setListUser([])
         setOnLoadingListUser(true)
-        setTimeout(async () => {
+        const timer = setTimeout(async () => {
             if (username) {
                 try {
-
                     let resData = await apiSearch(LimitUser, username).get('')
-                    console.log('resData', resData)
-
                     if (resData.data.total_count > 0) {
-                        let similarUsername = resData.data.items.filter((o: any) => o.login.includes(username)).filter((item: any, idx: any) => idx < 5);
-                        console.log('similarUsername', similarUsername)
+                        let similarUsername = resData.data.items.filter((o: any) => o.login.toLowerCase().includes((username).toLowerCase())).filter((item: any, idx: any) => idx < 5);
                         let listUData = await Promise.all(similarUsername.map(async (userdata: IGithubUser) => {
-                            console.log('userdata Promise', userdata)
                             try {
                                 let detailUserData = await detailUser(userdata.login).get('')
-                                console.log('detailUserData', detailUserData)
                                 userdata = detailUserData.data
                                 userdata.showAccordion = false
                                 userdata.dataRepo = []
                                 return userdata
                             } catch (err) {
-                                console.log(err)
+                                // console.log(err)
                                 return userdata
                             }
                         }))
                         setListUser(listUData)
                         setOnLoadingListUser(false)
+                        clearTimeout(timer);
                     } else {
                         setOnLoadingListUser(false)
+                        clearTimeout(timer);
                     }
                 } catch (err) {
-                    console.log('err', err)
+                    // console.log('err', err)
                     setOnLoadingListUser(false)
-                    // Buat info error 403 limit req
+                    setOnErrorRequest({
+                        isError: true,
+                        messsage: 'Limit Request'
+                    })
+                    clearTimeout(timer);
                 }
             } else {
                 setOnLoadingListUser(false)
+                clearTimeout(timer);
             }
         }, 1000)
 
@@ -83,7 +69,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     const getDetailRepo = useCallback(async (username: string) => {
         setOnLoadingDetailRepo(true)
 
-        setTimeout(async () => {
+        const timer = setTimeout(async () => {
             if (username) {
                 try {
                     let repoData = await detailRepo(username).get('')
@@ -100,8 +86,10 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                         })
                         setListUser(bufferlistUser)
                         setOnLoadingDetailRepo(false)
+                        clearTimeout(timer);
                     } else {
                         setOnLoadingDetailRepo(false)
+                        clearTimeout(timer);
                     }
                     if (repoData.data.length === 0) {
                         let bufferlistUser = listUser.map((lUser) => {
@@ -111,13 +99,19 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                         })
                         setListUser(bufferlistUser)
                         setOnLoadingDetailRepo(false)
+                        clearTimeout(timer);
                     } else {
                         setOnLoadingDetailRepo(false)
+                        clearTimeout(timer);
                     }
                 } catch (err) {
-                    console.log('err', err)
-                    // Buat info error 403 limit req
-
+                    // console.log('err', err)
+                    setOnLoadingDetailRepo(false)
+                    setOnErrorRequest({
+                        isError: true,
+                        messsage: 'Limit Request'
+                    })
+                    clearTimeout(timer);
                 }
             }
         }, 1000)
@@ -129,7 +123,7 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     const getDetailRepoMultiple = useCallback(async (username: string, totalRepo: number) => {
         let pages = Math.ceil(totalRepo / 100)
         setOnLoadingDetailRepo(true)
-        setTimeout(async () => {
+        const timer = setTimeout(async () => {
             try {
                 if (username) {
                     let repoData = await detailRepoMultiple(username, pages)
@@ -147,13 +141,21 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
                         })
                         setListUser(bufferlistUser)
                         setOnLoadingDetailRepo(false)
+                        clearTimeout(timer);
                     }
                     else {
                         setOnLoadingDetailRepo(false)
+                        clearTimeout(timer);
                     }
                 }
             } catch (err) {
-                console.log('err', err)
+                // console.log('err', err)
+                setOnLoadingDetailRepo(false)
+                setOnErrorRequest({
+                    isError: true,
+                    messsage: 'Limit Request'
+                })
+                clearTimeout(timer);
             }
         }, 1000)
     }, [listUser])
@@ -167,6 +169,8 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     return (
         <UserContext.Provider
             value={{
+                onErrorRequest,
+                setOnErrorRequest,
                 getListUser,
                 listUser,
                 setListUser,

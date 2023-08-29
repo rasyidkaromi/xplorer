@@ -1,3 +1,30 @@
+import { ReactNode, Dispatch, SetStateAction } from 'react';
+
+interface errorMessage {
+    isError: boolean
+    messsage: string
+}
+interface UserProviderProps {
+    children: ReactNode
+}
+
+interface IUserContext {
+    onErrorRequest: errorMessage
+    setOnErrorRequest: Dispatch<SetStateAction<errorMessage>>
+    listUser: IGithubUser[]
+    setListUser: Dispatch<SetStateAction<IGithubUser[]>>
+    clearListUser: () => void
+    getDetailRepo: (username: string) => Promise<void>
+    getDetailRepoMultiple: (username: string, totalRepo: number) => Promise<void>
+    getListUser: (username: string) => void
+    onFocusInput: boolean
+    setOnFocusInput: Dispatch<SetStateAction<boolean>>
+    onLoadingListUser: boolean
+    setOnLoadingListUser: Dispatch<SetStateAction<boolean>>
+    onLoadingDetailRepo: boolean
+    setOnLoadingDetailRepo: Dispatch<SetStateAction<boolean>>
+}
+
 
 interface IGithubUser {
     avatar_url: string,
@@ -120,6 +147,9 @@ interface ISingleRepo {
 }
 
 export type {
+    errorMessage,
+    UserProviderProps,
+    IUserContext,
     IGithubUser,
     ISingleRepo
 }

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 import { useUser } from '../../../hooks/userContext';
 import { UserListStyle } from './styles'
-import { ISingleRepo } from '../../../interface'
+import { ISingleRepo } from '../../../hooks/IUserContext'
 
 const RepoListLoader = () => (
     <ContentLoader
