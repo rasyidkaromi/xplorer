@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { apiSearch, detailUser, detailRepo, detailRepoMultiple } from '../services/api';
 import { LimitUser } from '../constant'
 
-import { UserProviderProps, IUserContext, IGithubUser, errorMessage, ISingleRepo } from './IUserContext'
+import { UserProviderProps, IUserContext, IGithubUser, errorMessage } from './IUserContext'
 
 
 
