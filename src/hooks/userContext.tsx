@@ -16,10 +16,9 @@ export function UserProvider({ children }: UserProviderProps): JSX.Element {
     const [onLoadingDetailRepo, setOnLoadingDetailRepo] = useState<boolean>(false)
     const [onErrorRequest, setOnErrorRequest] = useState<errorMessage>({ isError: false, messsage: '' })
 
-
-    useEffect(() => {
-        console.log('listUser', listUser)
-    }, [listUser])
+    // useEffect(() => {
+    //     console.log('listUser', listUser)
+    // }, [listUser])
 
     const getListUser = useCallback((username: string) => {
         setListUser([])
