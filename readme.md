@@ -13,23 +13,20 @@ https://peppy-paprenjak-31bfb7.netlify.app/
 
 ------------------------------------------------------------
 
-```
 - git clone https://github.com/rasyidkaromi/xplorer.git
 - cd 'xplorer'
 - install depedencies npm install or yarn
 - yarn start 
-```
 
 ------------------------------------------------------------
 
 
 ### Libraries
-```
 1. Axios
 2. Framer Motion
 3. React Icons
 4. React Content Loader
-```
+
 
   <div>
   <br>
