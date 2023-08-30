@@ -1,4 +1,4 @@
-# xplorer
+# GitHub repositories explorer
 
 <div>
   <br>
